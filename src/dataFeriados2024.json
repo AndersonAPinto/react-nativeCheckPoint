@@ -1,0 +1,21 @@
+{
+  "nacionais": [
+    {"data":"01-01-2024","name":"Confraternização mundial","type":"national"},
+    {"data":"02-02-2024", "name":"Nossa Senhora dos Navegantes", "type":"national"},
+    {"data":"12-02-2024","name":"Carnaval","type":"national"},
+    {"data":"13-02-2024","name":"Carnaval(Facultativo)","type":"national"},
+    {"data":"29-03-2024","name":"Sexta-feira Santa","type":"national"},
+    {"data":"31-03-2024","name":"Páscoa","type":"national"},
+    {"data":"21-04-2024","name":"Tiradentes","type":"national"},
+    {"data":"01-05-2024","name":"Dia do trabalho","type":"national"},
+    {"data":"30-05-2024","name":"Corpus Christi","type":"national"},
+    {"data":"20-09-2024","name":"Revolução Farroupilha","type":"national"},
+    {"data":"07-09-2024","name":"Independência do Brasil","type":"national"},
+    {"data":"12-10-2024","name":"Nossa Senhora Aparecida","type":"national"},
+    {"data":"02-11-2024","name":"Finados","type":"national"},
+    {"data":"15-11-2024","name":"Proclamação da República","type":"national"},
+    {"data":"25-12-2024","name":"Natal","type":"national"}
+  ]
+}
+
+  
