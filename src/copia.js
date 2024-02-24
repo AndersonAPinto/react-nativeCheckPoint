@@ -86,3 +86,29 @@ const styles = StyleSheet.create({
 });
 
 export default CalculadoraDiasUteis;
+{/*
+const handlePlay = () => {
+        if (ultimoStop) {
+            const agora = new Date();
+            const diferencaHora = agora.getTime() - new Date(ultimoStop).getTime();
+
+            if (diferencaHora < 39600000) {
+
+                const horasRestantes = Math.floor((39600000 - diferencaHora) / 3600000);
+                const minutosRestantes = Math.floor(((39600000 - diferencaHora) % 3600000) / 60000);
+
+                //Alert.alert("Aguarde", `O cronômetro só pode ser reiniciado em ${horasRestantes} hora(s) e ${minutosRestantes} minuto(s).`);
+                setMensagemTempoRestante(`Aguarde ${horasRestantes} h e ${minutosRestantes} min para reiniciar o cronômetro.`);
+               
+                return; // Sai da função sem iniciar o cronômetro
+            } else {
+                setMensagemTempoRestante("");
+            }
+
+        }
+
+        if (!isRunning) {
+            setIsRunning(true);
+        }
+    };
+*/}
