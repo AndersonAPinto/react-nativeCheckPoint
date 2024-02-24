@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, Alert } from 'react-native';
+import { View, Text, Button, Alert, Input } from 'react-native';
+import HistoricoEventos from './HistoricoEventos';
 
 const Cronometro = ({ cargaHorariaFormatada }) => {
     const [isRunning, setIsRunning] = useState(false);
     const [tempoDecorrido, setTempoDecorrido] = useState(0);
     const [intervalId, setIntervalId] = useState(null);
-    const [ultimoStop, setUltimoStop] = useState(null);
-    const [ultimoPlay, setUltimoPlay] = useState(null);
+    const [historicoEventos, setHistoricoEventos] = useState([]);
+    const [UltimoStop, setUltimoStop] = useState(false);
+    const [historicoStop, setHistoricoStop] = useState(false);
+
     const [mensagemTempoRestante, setMensagemTempoRestante] = useState("");
 
 
@@ -40,7 +43,7 @@ const Cronometro = ({ cargaHorariaFormatada }) => {
                     }
                     return novoTempo; // Incrementa o tempo decorrido
                 });
-            }, 60000); // 60000 ms = 1 minuto
+            }, 1000); // 60000 ms = 1 minuto
             setIntervalId(id); // Salva o ID do intervalo para poder limpar depois
             return () => clearInterval(id); // Limpa o intervalo ao desmontar o componente ou quando pausar
         }
@@ -48,12 +51,12 @@ const Cronometro = ({ cargaHorariaFormatada }) => {
 
     useEffect(() => {
         let intervalId;
-        if (ultimoStop && !isRunning) {
+        if (UltimoStop && !isRunning) {
             intervalId = setInterval(() => {
                 const agora = new Date();
-                const diferencaHora = agora.getTime() - new Date(ultimoStop).getTime();
+                const diferencaHora = agora.getTime() - new Date(UltimoStop).getTime();
 
-                if (diferencaHora < 39600000) {
+                if (diferencaHora < 10000) {
                     const horasRestantes = Math.floor((39600000 - diferencaHora) / 3600000);
                     const minutosRestantes = Math.floor(((39600000 - diferencaHora) % 3600000) / 60000);
 
@@ -66,36 +69,43 @@ const Cronometro = ({ cargaHorariaFormatada }) => {
         }
 
         return () => clearInterval(intervalId);
-    }, [ultimoStop, isRunning]);
+    }, [UltimoStop, isRunning]);
 
     const handlePlay = () => {
-        if (ultimoStop) {
-            const agora = new Date();
-            const diferencaHora = agora.getTime() - new Date(ultimoStop).getTime();
-
-            if (diferencaHora < 39600000) {
-                // Se ainda não passou o tempo mínimo desde o último "Stop", não faz nada
-                return;
-            }
+        if (!historicoStop) {
+            setIsRunning(true);
+            setHistoricoEventos(historicoAtual => [...historicoAtual, { tipo: "Play", momento: new Date() }]);
+        }else{
+            console.log("Ação de Play bloqueada devido a um Stop recente.") ;
         }
-        setIsRunning(true);
-        setUltimoPlay(new Date());
     };
 
     const handlePause = () => {
-        setIsRunning(false);
+        if (isRunning) {
+            setIsRunning(false);
+            setHistoricoEventos(historicoAtual => [...historicoAtual, { tipo: "Pause", momento: new Date() }]);
+
+        }
+
     };
 
     const handleStop = () => {
         setIsRunning(false);
         setTempoDecorrido(0);
         setUltimoStop(new Date());
+        setHistoricoStop(true);
+        setHistoricoEventos(historicoAtual => [...historicoAtual, { tipo: "Stop", momento: new Date() }]);
+
+        setTimeout(() =>{
+            setHistoricoStop(false);
+        }, 10000);
     };
 
     // Formatação do tempo decorrido para exibição
-    const horasDecorridas = Math.floor(tempoDecorrido / 60);
-    const minutosDecorridos = tempoDecorrido % 60;
-    const tempoDecorridoFormatado = `${horasDecorridas}h e ${minutosDecorridos}min`;
+    const horasDecorridas = Math.floor(tempoDecorrido / 3600);
+    const minutosDecorridos = Math.floor((tempoDecorrido % 3600) / 60);
+    const segundosDecorridos = tempoDecorrido % 60;
+    const tempoDecorridoFormatado = `${horasDecorridas}h e ${minutosDecorridos}min ${segundosDecorridos}s`;
 
     return (
         <View>
@@ -109,10 +119,8 @@ const Cronometro = ({ cargaHorariaFormatada }) => {
             {!isRunning && <Button title="Play" onPress={handlePlay} />}
             {isRunning && <Button title="Pause" onPress={handlePause} />}
             <Button title="Stop" onPress={handleStop} />
-            {ultimoPlay && (
-                <Text>Último Play: {ultimoPlay.toLocaleString()}</Text>)}
-            {ultimoStop && (
-                <Text>Último Stop: {ultimoStop.toLocaleString()}</Text>)}
+            <HistoricoEventos historicoEventos={historicoEventos} />
+
         </View>
     );
 

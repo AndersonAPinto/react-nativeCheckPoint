@@ -12,7 +12,9 @@ const TemplateTeste = () => {
             
             <TextInput
                 style={styles.input}
-                placeholder="Digite a carga horária total"
+                //underlineColorAndroid="transparent"
+                selectionColor="transparent"
+               placeholder="Digite a carga horária total"
                 value={cargaHoraria.toString()}
                 onChangeText={text => setCargaHoraria(parseInt(text) || 0)}
                 keyboardType="numeric"
