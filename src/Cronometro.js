@@ -104,9 +104,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
         setUltimoStop(new Date());
         setHistoricoStop(true);
         setHistoricoEventos(historicoAtual => [...historicoAtual, { tipo: "Stop", momento: new Date() }]);
-        const eventoStop = { tipo: "Stop", momento: new Date().toISOString() };
+        const eventoStop = { tipo: "Stop", momento: new Date().toLocaleDateString() };
         await salvarEvento(eventoStop); 
-        const dataSalvamento = new Date().toISOString();
+        const dataSalvamento = new Date();
         const eventosSalvos = historicoEventos.filter(evento => evento.tipo === "Play" || evento.tipo === "Pause");
         try {
             const dadosAtuais = await AsyncStorage.getItem('dadosSalvos');
@@ -148,7 +148,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
                 )}
                 {!isRunning && <Button title="Play" onPress={handlePlay} />}
                 {isRunning && <Button title="Pause" onPress={handlePause} />}
-                <Button title="Stop" 
+                <Button title="Stop"
+                    disabled={historicoEventos.length === 0} 
                     onPress={() => {
                         handleStop();
                         console.log(JSON.stringify(dadosSalvos));

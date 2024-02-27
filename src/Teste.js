@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableWithoutFeedback, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
@@ -43,6 +43,8 @@ const Teste = () => {
         clearTimeout(pressTimer);
     };
     const datasSalvamento = Object.keys(dadosSalvos);
+    
+
     return (
         <ScrollView style={styles.container}>
             {datasSalvamento.length > 0 ? datasSalvamento.reverse().map((data, index) => {
