@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import feriados from './dataFeriados2024.json';
 import Cronometro from './Cronometro';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-const CalculadoraDiasUteis = ({ cargaHoraria }) => {
+
+const CalculadoraDiasUteis = ({cargaHoraria}) => {
     const [diasUteis, setDiasUteis] = useState(0);
-
+    
     useEffect(() => {
         const dataAtual = new Date();
         calcularDiasUteis(dataAtual.getFullYear(), dataAtual.getMonth());
@@ -15,6 +17,8 @@ const CalculadoraDiasUteis = ({ cargaHoraria }) => {
         let contadorDiasUteis = 0;
         const dataInicio = new Date(ano, mes - 1, 15);
         const dataFim = new Date(ano, mes, 16);
+        
+
 
         for (let data = new Date(dataInicio); data <= dataFim; data.setDate(data.getDate() + 1)) {
             const diaSemana = data.getDay();
@@ -39,19 +43,27 @@ const CalculadoraDiasUteis = ({ cargaHoraria }) => {
     }
 
     const cargaHorariaFormatada = `${horas}h e ${minutos}min`;
+    console.log('cargaHoraria recebida em CalculadoraDiasUteis:', cargaHoraria);
 
     return (
-        <View>
-            <Text>Dias úteis no período: {diasUteis}</Text>
-            <Text style={styles.textCargaH}>A carga horária/dia é de: {cargaHorariaFormatada}</Text>
-            <Cronometro cargaHorariaFormatada={cargaHorariaFormatada} />
-        </View>
+        <SafeAreaView style={styles.container}>
+            <View>
+                <Text>Dias úteis no período: {diasUteis}</Text>
+                <Text style={styles.textCargaH}>A carga horária/dia é de: {cargaHorariaFormatada}</Text>
+                <Cronometro cargaHorariaFormatada={cargaHorariaFormatada} />
+            </View>
+        </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
     textCargaH: {
         marginBottom: 10,
+    },
+    container:{
+        flex:1,
+        justifyContent:'center',
+        alignItems:'center',
     },
 });
 

@@ -1,17 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, Alert, Input } from 'react-native';
+import { View, Text, Button, Alert } from 'react-native';
 import HistoricoEventos from './HistoricoEventos';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Cronometro = ({ cargaHorariaFormatada }) => {
+
+
+ function Cronometro ({ cargaHorariaFormatada }) {
+    const navigation = useNavigation();
     const [isRunning, setIsRunning] = useState(false);
     const [tempoDecorrido, setTempoDecorrido] = useState(0);
     const [intervalId, setIntervalId] = useState(null);
     const [historicoEventos, setHistoricoEventos] = useState([]);
     const [UltimoStop, setUltimoStop] = useState(false);
     const [historicoStop, setHistoricoStop] = useState(false);
-
     const [mensagemTempoRestante, setMensagemTempoRestante] = useState("");
-
+    const [dadosSalvos, setDadosSalvos] = useState({});
+    const horasDecorridas = Math.floor(tempoDecorrido / 3600);
+    const minutosDecorridos = Math.floor((tempoDecorrido % 3600) / 60);
+    const segundosDecorridos = tempoDecorrido % 60;
+    const tempoDecorridoFormatado = `${horasDecorridas}h e ${minutosDecorridos}min ${segundosDecorridos}s`;
+   
 
     useEffect(() => {
         if (isRunning) {
@@ -75,8 +84,8 @@ const Cronometro = ({ cargaHorariaFormatada }) => {
         if (!historicoStop) {
             setIsRunning(true);
             setHistoricoEventos(historicoAtual => [...historicoAtual, { tipo: "Play", momento: new Date() }]);
-        }else{
-            console.log("Ação de Play bloqueada devido a um Stop recente.") ;
+        } else {
+            console.log("Ação de Play bloqueada devido a um Stop recente.");
         }
     };
 
@@ -89,41 +98,68 @@ const Cronometro = ({ cargaHorariaFormatada }) => {
 
     };
 
-    const handleStop = () => {
+    const handleStop = async () => {
         setIsRunning(false);
         setTempoDecorrido(0);
         setUltimoStop(new Date());
         setHistoricoStop(true);
         setHistoricoEventos(historicoAtual => [...historicoAtual, { tipo: "Stop", momento: new Date() }]);
-
-        setTimeout(() =>{
+        const eventoStop = { tipo: "Stop", momento: new Date().toISOString() };
+        await salvarEvento(eventoStop); 
+        const dataSalvamento = new Date().toISOString();
+        const eventosSalvos = historicoEventos.filter(evento => evento.tipo === "Play" || evento.tipo === "Pause");
+        try {
+            const dadosAtuais = await AsyncStorage.getItem('dadosSalvos');
+            const dadosAtualizados = dadosAtuais ? JSON.parse(dadosAtuais) : {};
+            dadosAtualizados[dataSalvamento] = eventosSalvos;
+    
+            await AsyncStorage.setItem('dadosSalvos', JSON.stringify(dadosAtualizados));
+            Alert.alert("Carga horária do dia salva");
+            navigation.navigate('Teste');
+        } catch (error) {
+            console.log("Erro ao salvar dados", error);
+        }
+        setHistoricoEventos([]);
+        setTimeout(() => {
             setHistoricoStop(false);
         }, 10000);
     };
 
+
+    const salvarEvento = async (evento) => {
+        try {
+          const eventosExistentes = await AsyncStorage.getItem('eventosSalvos');
+          const eventosAtualizados = eventosExistentes ? JSON.parse(eventosExistentes) : [];
+          eventosAtualizados.push(evento);
+          await AsyncStorage.setItem('eventosSalvos', JSON.stringify(eventosAtualizados));
+        } catch (error) {
+          console.log("Erro ao salvar evento", error);
+        }
+      };
     // Formatação do tempo decorrido para exibição
-    const horasDecorridas = Math.floor(tempoDecorrido / 3600);
-    const minutosDecorridos = Math.floor((tempoDecorrido % 3600) / 60);
-    const segundosDecorridos = tempoDecorrido % 60;
-    const tempoDecorridoFormatado = `${horasDecorridas}h e ${minutosDecorridos}min ${segundosDecorridos}s`;
-
     return (
-        <View>
-            {mensagemTempoRestante ? (
-                // Se existe uma mensagem de tempo restante, exibe ela
-                <Text>{mensagemTempoRestante}</Text>
-            ) : (
-                // Caso contrário, exibe o tempo decorrido
-                <Text>Tempo Decorrido: {tempoDecorridoFormatado}</Text>
-            )}
-            {!isRunning && <Button title="Play" onPress={handlePlay} />}
-            {isRunning && <Button title="Pause" onPress={handlePause} />}
-            <Button title="Stop" onPress={handleStop} />
-            <HistoricoEventos historicoEventos={historicoEventos} />
-
-        </View>
+            <View>
+                {mensagemTempoRestante ? (
+                    // Se existe uma mensagem de tempo restante, exibe ela
+                    <Text>{mensagemTempoRestante}</Text>
+                ) : (
+                    // Caso contrário, exibe o tempo decorrido
+                    <Text>Tempo Decorrido: {tempoDecorridoFormatado}</Text>
+                )}
+                {!isRunning && <Button title="Play" onPress={handlePlay} />}
+                {isRunning && <Button title="Pause" onPress={handlePause} />}
+                <Button title="Stop" 
+                    onPress={() => {
+                        handleStop();
+                        console.log(JSON.stringify(dadosSalvos));
+                        }} />
+                <HistoricoEventos historicoEventos={historicoEventos} />
+                
+                
+            </View>
+        
     );
 
 };
+export default Cronometro
 
-export default Cronometro;
