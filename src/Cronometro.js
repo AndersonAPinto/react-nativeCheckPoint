@@ -178,9 +178,7 @@ function Cronometro({ cargaHorariaFormatada }) {
                     console.log(JSON.stringify(dadosSalvos));
                 }} />
             <HistoricoEventos historicoEventos={historicoEventos} />
-
         </View>
-
     );
 };
 export default Cronometro

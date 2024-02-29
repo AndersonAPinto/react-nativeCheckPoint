@@ -27,7 +27,6 @@ const Teste = () => {
             buscarDadosSalvos();
         }, [])
     );
-
     const onLongPress = async (data) => {
         pressTimer = setTimeout(async () => {
             const updatedDadosSalvos = { ...dadosSalvos };
@@ -38,12 +37,10 @@ const Teste = () => {
         }, 1000);
         return pressTimer;
     };
-
     const onPressOut = () => {
         clearTimeout(pressTimer);
     };
     const datasSalvamento = Object.keys(dadosSalvos);
-    
 
     return (
         <ScrollView style={styles.container}>

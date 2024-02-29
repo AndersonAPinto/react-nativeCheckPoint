@@ -17,8 +17,6 @@ const CalculadoraDiasUteis = ({cargaHoraria}) => {
         let contadorDiasUteis = 0;
         const dataInicio = new Date(ano, mes - 1, 15);
         const dataFim = new Date(ano, mes, 16);
-        
-
 
         for (let data = new Date(dataInicio); data <= dataFim; data.setDate(data.getDate() + 1)) {
             const diaSemana = data.getDay();
@@ -29,7 +27,6 @@ const CalculadoraDiasUteis = ({cargaHoraria}) => {
                 contadorDiasUteis++;
             }
         }
-
         setDiasUteis(contadorDiasUteis);
     };
 
