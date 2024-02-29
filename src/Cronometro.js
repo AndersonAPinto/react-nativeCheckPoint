@@ -53,15 +53,24 @@ function Cronometro({ cargaHorariaFormatada }) {
                     if (novoTempo === 35400){
                         clearInterval(id); // Para o cronômetro
                         setIsRunning(false); // Atualiza o estado para pausar o cronômetro
-                        // Exibe o alerta de carga horária completada
-                        Alert.alert('Tempo Concluído', 'Você concluiu a carga horária máxima permitida.');
+                        playAudio().then(sound => {
+                            Alert.alert('Tempo Concluído', 'Você concluiu a carga horária máxima permitida.', [
+                                { text: "OK", onPress: () => sound.stopAsync() } // Para a reprodução ao tocar em OK
+                            ]);
+                        });
+                        //Alert.alert('Tempo Concluído', 'Você concluiu a carga horária máxima permitida.');
                         return prevTempo; // Retorna o tempo atual sem incrementar, pois atingiu a carga total
                     }
                     // Verifica se o tempo decorrido atingiu a carga total de minutos
                     if (novoTempo === cargaTotalMinutos * 60) {
                         clearInterval(id); // Para o cronômetro
                         setIsRunning(false); // Atualiza o estado para pausar o cronômetro
-                        Alert.alert('Tempo Concluído', 'Você concluiu a carga horária planejada.');
+                        playAudio().then(sound => {
+                            Alert.alert('Tempo Concluído', 'Você concluiu a carga horária planejada.', [
+                                { text: "OK", onPress: () => sound.stopAsync() } // Para a reprodução ao tocar em OK
+                            ]);
+                        });
+                        //Alert.alert('Tempo Concluído', 'Você concluiu a carga horária planejada.');
                     }
                     return novoTempo; // Incrementa o tempo decorrido
                 });
@@ -89,7 +98,7 @@ function Cronometro({ cargaHorariaFormatada }) {
                     setMensagemTempoRestante("");
                     clearInterval(intervalId);
                 }
-            },10000); //1000ms === 1 segundo ou 60000 === 1 minuto
+            },1000); //1000ms === 1 segundo ou 60000 === 1 minuto
         }
 
         return () => clearInterval(intervalId);
@@ -103,23 +112,19 @@ function Cronometro({ cargaHorariaFormatada }) {
             console.log("Ação de Play bloqueada devido a um Stop recente.");
         }
     };
-
     const handlePause = () => {
         if (isRunning) {
             setIsRunning(false);
             setHistoricoEventos(historicoAtual => [...historicoAtual, { tipo: "Pause", momento: new Date() }]);
-
         }
-
     };
-
     const handleStop = async () => {
         setIsRunning(false);
         setTempoDecorrido(0);
         setUltimoStop(new Date());
         setHistoricoStop(true);
         setHistoricoEventos(historicoAtual => [...historicoAtual, { tipo: "Stop", momento: new Date() }]);
-        const eventoStop = { tipo: "Stop", momento: new Date().toLocaleDateString() };
+        const eventoStop = { tipo: "Stop", momento: new Date().toLocaleDateString()};
         await salvarEvento(eventoStop);
         const dataSalvamento = new Date();
         const eventosSalvos = historicoEventos.filter(evento => evento.tipo === "Play" || evento.tipo === "Pause");
@@ -131,7 +136,7 @@ function Cronometro({ cargaHorariaFormatada }) {
             await AsyncStorage.setItem('dadosSalvos', JSON.stringify(dadosAtualizados));
             Alert.alert("Carga horária do dia salva");
             navigation.navigate('Teste');
-        } catch (error) {
+        }catch (error) {
             console.log("Erro ao salvar dados", error);
         }
         setHistoricoEventos([]);
