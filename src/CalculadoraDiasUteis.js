@@ -5,9 +5,9 @@ import Cronometro from './Cronometro';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
-const CalculadoraDiasUteis = ({cargaHoraria}) => {
+const CalculadoraDiasUteis = ({ cargaHoraria }) => {
     const [diasUteis, setDiasUteis] = useState(0);
-    
+
     useEffect(() => {
         const dataAtual = new Date();
         calcularDiasUteis(dataAtual.getFullYear(), dataAtual.getMonth());
@@ -43,25 +43,39 @@ const CalculadoraDiasUteis = ({cargaHoraria}) => {
     console.log('cargaHoraria recebida em CalculadoraDiasUteis:', cargaHoraria);
 
     return (
-        <SafeAreaView style={styles.container}>
+        
             <View>
-                <Text>Dias úteis no período: {diasUteis}</Text>
-                <Text style={styles.textCargaH}>A carga horária/dia é de: {cargaHorariaFormatada}</Text>
+                <View style={styles.container}>
+                    <Text style={styles.textCargaUteis}>Dias Úteis: {diasUteis}</Text>
+                    <Text style={styles.textCargaHoraria}>Carga horária/Dia: {cargaHorariaFormatada}</Text>
+                </View>
                 <Cronometro cargaHorariaFormatada={cargaHorariaFormatada} />
             </View>
-        </SafeAreaView>
+        
     );
 };
 
 const styles = StyleSheet.create({
-    textCargaH: {
-        marginBottom: 10,
-    },
-    container:{
-        flex:1,
-        justifyContent:'center',
+    container: {
+        width: 'auto',
+        height: 100,
+        marginLeft: 15,
+        marginRight: 15,
+        borderRadius: 10,
+        backgroundColor: '#383c4c',
         alignItems:'center',
+        justifyContent:'center',
+        marginBottom: 5,
     },
+    textCargaHoraria:{
+        color: '#C2C7CC',
+        fontSize: 20,
+    },
+    textCargaUteis:{
+        color: '#C2C7CC',
+        fontSize: 15,
+        height:30,
+    }
 });
 
 export default CalculadoraDiasUteis;

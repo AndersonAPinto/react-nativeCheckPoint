@@ -1,18 +1,38 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
 
 const HistoricoEventos = ({ historicoEventos }) => {
-  console.log('historico de eventos',historicoEventos);
+  console.log('historico de eventos', historicoEventos);
   return (
-      <View>
+    <View>
+      <Text style={styles.textRegistro}>Registros do dia...</Text>
+      <View style={styles.viewHistoricaEventos}>
         {historicoEventos.map((evento, index) => (
-          <Text key={index}>{evento.tipo}: {evento.momento.toLocaleString()}</Text>
+          <Text style={styles.textHE} key={index}>{evento.tipo}: {evento.momento.toLocaleString()}</Text>
         ))}
-        <Text>Historico Eventos</Text>
+
       </View>
+    </View>
   );
 };
 
+const styles = StyleSheet.create({
+  viewHistoricaEventos: {
+    backgroundColor: '#C2C1CC',
+    padding:10,
+    borderRadius: 5,
+    width: 250,
+
+  },
+  textRegistro:{
+    color: '#C2c2cc',
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  textHE: {
+    color: 'yellow',
+  }
+});
 
 export default HistoricoEventos;

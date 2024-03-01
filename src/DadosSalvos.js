@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 
 
-const Teste = () => {
+const DadosSalvos = () => {
     const [dadosSalvos, setDadosSalvos] = useState({});
 
     console.log('Os dadosSalvos sao ', dadosSalvos)
@@ -91,5 +91,5 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
 });
-export default Teste;
+export default DadosSalvos;
 
