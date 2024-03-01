@@ -4,6 +4,7 @@ import HistoricoEventos from './HistoricoEventos';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Audio } from 'expo-av';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 function Cronometro({ cargaHorariaFormatada }) {
@@ -19,8 +20,11 @@ function Cronometro({ cargaHorariaFormatada }) {
     const horasDecorridas = Math.floor(tempoDecorrido / 3600);
     const minutosDecorridos = Math.floor((tempoDecorrido % 3600) / 60);
     const segundosDecorridos = tempoDecorrido % 60;
-    const tempoDecorridoFormatado = `${horasDecorridas}h : ${minutosDecorridos}m e ${segundosDecorridos}s`;
-
+    //const tempoDecorridoFormatado = `${horasDecorridas} h : ${minutosDecorridos} min e ${segundosDecorridos}s`;
+    const tempoDecorridoFormatado = [
+        { texto: `${horasDecorridas}h ${minutosDecorridos}min `, style: { color: '#C2C7CC', fontSize: 50 } },
+        { texto: `${segundosDecorridos}s`, style: { color: '#C2C7CC', fontSize: 15 } },
+    ];
 
     async function playAudio() {
         const { sound } = await Audio.Sound.createAsync(
@@ -94,7 +98,12 @@ function Cronometro({ cargaHorariaFormatada }) {
                     const minutosRestantes = Math.floor(((tempoDePausa - diferencaHora) % 3600000) / 60000);
                     const segundosRestantes = Math.floor(((tempoDePausa - diferencaHora) % 60000) / 1000);
 
-                    setMensagemTempoRestante(`... Aguarde ... ${horasRestantes}h ${minutosRestantes}min ${segundosRestantes}s para reiniciar o cronômetro`);
+                    //setMensagemTempoRestante(`... Aguarde ... ${horasRestantes}h ${minutosRestantes}min ${segundosRestantes}s para reiniciar o cronômetro`);
+                    setMensagemTempoRestante([
+                        { texto: "!!! Aguarde !!! ", style: { color: 'red', fontSize:30 } },
+                        { texto: `${horasRestantes}h : ${minutosRestantes}min ${segundosRestantes}s`, style: { color: 'green', fontSize:30 } },
+                        { texto: "para o novo Registro Ponto", style: {color:'#C2C1CC'} },
+                    ]);
                 } else {
                     setMensagemTempoRestante("");
                     clearInterval(intervalId);
@@ -108,7 +117,7 @@ function Cronometro({ cargaHorariaFormatada }) {
     const handlePlay = () => {
         if (!historicoStop) {
             setIsRunning(true);
-            setHistoricoEventos(historicoAtual => [...historicoAtual, { tipo: "Início ⏱", momento: new Date().toTimeString() }]);
+            setHistoricoEventos(historicoAtual => [...historicoAtual, { tipo: "Início",momento: new Date() }]);
         } else {
             console.log("Ação de Início bloqueada devido a uma Parada recente.");
         }
@@ -116,7 +125,7 @@ function Cronometro({ cargaHorariaFormatada }) {
     const handlePause = () => {
         if (isRunning) {
             setIsRunning(false);
-            setHistoricoEventos(historicoAtual => [...historicoAtual, { tipo: "Intervalo ⏸", momento: new Date().toTimeString() }]);
+            setHistoricoEventos(historicoAtual => [...historicoAtual, { tipo: "Intervalo", momento: new Date() }]);
         }
     };
     const handleStop = async () => {
@@ -124,10 +133,10 @@ function Cronometro({ cargaHorariaFormatada }) {
         setTempoDecorrido(0);
         setUltimoStop(new Date());
         setHistoricoStop(true);
-        setHistoricoEventos(historicoAtual => [...historicoAtual, { tipo: "Parar ⚐", momento: new Date().toTimeString() }]);
+        setHistoricoEventos(historicoAtual => [...historicoAtual, { tipo: "Parar", momento: new Date() }]);
         const eventoStop = { tipo: "Parar", momento: new Date().toLocaleDateString() };
         await salvarEvento(eventoStop);
-        const dataSalvamento = new Date();
+        const dataSalvamento = new Date().toTimeString();
         const eventosSalvos = historicoEventos.filter(evento => evento.tipo === "Início" || evento.tipo === "Intervalo");
         try {
             const dadosAtuais = await AsyncStorage.getItem('dadosSalvos');
@@ -160,20 +169,39 @@ function Cronometro({ cargaHorariaFormatada }) {
     // Formatação do tempo decorrido para exibição
     return (
         <View style={styles.telaInformacoes}>
-            {mensagemTempoRestante ? (
-                // Se existe uma mensagem de tempo restante, exibe ela
-                <Text style={styles.msgTempoRestante}>{mensagemTempoRestante}</Text>
+            {mensagemTempoRestante && mensagemTempoRestante.length > 0 ? (
+                <View style={styles.segmentoContainer}>
+                    {mensagemTempoRestante.map((segmento, index) => (
+                        <Text key={index} style={segmento.style}>
+                            {segmento.texto}
+                        </Text>
+                    ))}
+                </View>
             ) : (
                 // Caso contrário, exibe o tempo decorrido
-                <Text style={styles.msgTempoRestante}>{tempoDecorridoFormatado}</Text>
+                <View style={styles.horaFormatada}>
+                    {tempoDecorridoFormatado.map((segmento, index) => (
+                        <Text key={index} style={segmento.style}>
+                            {segmento.texto}
+                        </Text>
+                    ))}
+                </View>
             )}
             <View style={styles.btnInicioEIntervalo}>
-                {!isRunning && <Button title="Início"
+                {!isRunning && <Button 
+                    icon={
+                        <Icon
+                        name="flag-checkered"
+                        size={15}
+                        color="white"
+                        />
+                    }
+                    title="Início"
                     color="green"
                     onPress={handlePlay}
                     disabled={!!mensagemTempoRestante} //Converte a string para booleano
                 />}
-                {isRunning && <Button title="Intervalo" 
+                {isRunning && <Button title="Intervalo"
                     color='yellow'
                     onPress={handlePause} />}
                 <Button title="Parar"
@@ -198,16 +226,22 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         borderRadius: 10,
         backgroundColor: '#383c4c',
-        
+        flexDirection: 'column',
         alignItems: 'center',
-        padding: 0,
+        paddingVertical: 30,
+        
+    },
+    segmentoContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     msgTempoRestante: {
         fontSize: 40,
         color: '#C2C7CC',
-        textAlign:'auto',
-        paddingLeft:1,
-        paddingRight:1,
+        margin: 20,
+
+        paddingLeft: 1,
+        paddingRight: 1,
     },
     btnInicioEIntervalo: {
         flexDirection: 'row',
@@ -215,6 +249,11 @@ const styles = StyleSheet.create({
         width: 300,
         marginTop: 10,
         marginBottom: 10,
+    },
+    horaFormatada:{
+        flexDirection:'row',
+        alignItems:'center',
+        marginBottom: 20,
     },
 });
 

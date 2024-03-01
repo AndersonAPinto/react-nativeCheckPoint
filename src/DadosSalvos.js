@@ -7,8 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 const DadosSalvos = () => {
     const [dadosSalvos, setDadosSalvos] = useState({});
-
-    console.log('Os dadosSalvos sao ', dadosSalvos)
+    //console.log(dadosSalvos)
     let pressTimer;
 
     useFocusEffect(
@@ -42,11 +41,13 @@ const DadosSalvos = () => {
         clearTimeout(pressTimer);
     };
     const datasSalvamento = Object.keys(dadosSalvos);
-
+    console.log(dadosSalvos);
     return (
-
         <ScrollView style={styles.container}>
             <SafeAreaView>
+                <Text style={styles.textExtrato}>---- Extratos</Text>
+                <Text style={styles.linha}></Text>
+                
                 {datasSalvamento.length > 0 ? datasSalvamento.reverse().map((data, index) => {
                     return (
                         <TouchableWithoutFeedback
@@ -69,29 +70,40 @@ const DadosSalvos = () => {
                         <Text style={styles.noDataContainer}>Sem dados salvos!</Text>
                     </View>
                 )}
+
             </SafeAreaView>
         </ScrollView>
-
 
     );
 };
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 0,
+        padding: 10,
         margin: 0,
         backgroundColor: '#0C2134',
     },
+    textExtrato:{
+        color: '#C2C1CC',
+        fontSize: 30,
+    },
+    linha: {
+        borderBottomColor: '#C2C1CC', // Cor da linha
+        borderBottomWidth: 2, // Espessura da linha
+        marginVertical: 20, // Espaço vertical acima e abaixo da linha
+      },
     dataContainer: {
         backgroundColor: '#C2C1CC',
         marginVertical: 10,
-        paddingHorizontal: 20,
+        borderRadius:10,
+        padding:5,
     },
     dataTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-        color:'orange'
-       
+        color: 'blue',
+        marginBottom:2,
+
     },
     eventoText: {
         fontSize: 16,

@@ -36,24 +36,27 @@ function TemplateTeste() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container__principal}>
+        
         <View style={styles.viewSettings}>
-            <View style={styles.containerView}>
-              <Text style={styles.textCarga}>CARGA HORARIA TOTAL: </Text>
-              <TextInput
-                style={styles.input}
-                //underlineColorAndroid="transparent"
-                selectionColor="transparent"
-                value={cargaHoraria.toString()}
-                placeholder=' '
-                onChangeText={text => {
-                  const valorNumerico = parseInt(text) || 0;
-                  setCargaHoraria(valorNumerico);
-                  salvarCargaHoraria(valorNumerico); // Salva no AsyncStorage
-                }}
-                keyboardType="numeric"
-              />
-            </View>
+          <View style={styles.containerView}>
+            <Text style={styles.textCarga}>CARGA HORARIA TOTAL: </Text>
+            <TextInput
+              style={styles.input}
+              //underlineColorAndroid="transparent"
+              selectionColor="transparent"
+              value={cargaHoraria.toString()}
+              placeholder=' '
+              onChangeText={text => {
+                const valorNumerico = parseInt(text) || 0;
+                setCargaHoraria(valorNumerico);
+                salvarCargaHoraria(valorNumerico); // Salva no AsyncStorage
+              }}
+              keyboardType="numeric"
+            />
+
+          </View>
         </View>
+        
         <CalculadoraDiasUteis cargaHoraria={cargaHoraria} />
       </View>
     </SafeAreaView>
@@ -65,31 +68,37 @@ const styles = StyleSheet.create({
     padding: 0,
     margin: 0,
     backgroundColor: '#0C2134',
-    
   },
   viewSettings: {
     height: 40,
     justifyContent: 'center',
     alignItems: 'center',
     width: 'auto',
-    marginTop: 10,
+    marginTop: 30,
     marginLeft: 15,
     marginRight: 15,
+    marginBottom: 10,
     borderRadius: 5,
     backgroundColor: '#383c4c',
-    marginBottom: 5,
+
   },
-  containerView:{
+  containerView: {
     flexDirection: 'row',
-    alignItems:'center',
-    
+    alignItems: 'center',
+
+  },
+  linha: {
+    borderBottomColor: '#C2C1CC',
+    borderBottomWidth: 1,
+    marginVertical: 10,
   },
   input: {
     color: '#99a700',
     marginLeft: 10,
   },
   textCarga: {
-    color: '#C2C1CC'
+    color: '#C2C1CC',
+    marginBottom: 10,
   },
 });
 

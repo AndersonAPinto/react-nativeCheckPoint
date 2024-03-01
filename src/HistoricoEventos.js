@@ -3,7 +3,6 @@ import { View, Text, StyleSheet } from 'react-native';
 
 
 const HistoricoEventos = ({ historicoEventos }) => {
-  console.log('historico de eventos', historicoEventos);
   return (
     <View>
       <Text style={styles.textRegistro}>Registros do dia...</Text>
@@ -31,8 +30,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   textHE: {
-    color: 'yellow',
+    color: 'black',
   }
+ 
 });
 
 export default HistoricoEventos;

@@ -39,13 +39,17 @@ const CalculadoraDiasUteis = ({ cargaHoraria }) => {
         horas += 1;
     }
 
-    const cargaHorariaFormatada = `${horas}h e ${minutos}min`;
+    const cargaHorariaFormatada = `${horas} horas : ${minutos} min`;
     console.log('cargaHoraria recebida em CalculadoraDiasUteis:', cargaHoraria);
-
+    const [mesAtual, setMesAtual] = useState(new Date());
+    const ano = mesAtual.getFullYear()
+    const mes = mesAtual.getMonth();
+    const mesAnterior = new Date(ano, mes - 1, 15);
+    const mesQuinzenaAtual = new Date(ano, mes, 15);
     return (
-        
             <View>
                 <View style={styles.container}>
+                    <Text style={styles.textDate}>Período: {mesAnterior.toLocaleDateString('pt-BR')} à {mesQuinzenaAtual.toLocaleDateString('pt-BR')}</Text>
                     <Text style={styles.textCargaUteis}>Dias Úteis: {diasUteis}</Text>
                     <Text style={styles.textCargaHoraria}>Carga horária/Dia: {cargaHorariaFormatada}</Text>
                 </View>
@@ -63,18 +67,24 @@ const styles = StyleSheet.create({
         marginRight: 15,
         borderRadius: 10,
         backgroundColor: '#383c4c',
-        alignItems:'center',
+        alignItems:'start',
         justifyContent:'center',
-        marginBottom: 5,
+        marginBottom: '10%',
+        paddingLeft: 20,
+        
+    },
+    textDate:{
+        color: '#C2C7CC',
+        fontSize: 15,
     },
     textCargaHoraria:{
         color: '#C2C7CC',
-        fontSize: 20,
+        fontSize: 15,
     },
     textCargaUteis:{
         color: '#C2C7CC',
         fontSize: 15,
-        height:30,
+        
     }
 });
 

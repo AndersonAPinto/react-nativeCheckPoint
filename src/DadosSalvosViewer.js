@@ -5,15 +5,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 function DadosSalvosViewer({ dadosSalvos = {} }) {
   
-  console.log('dadosSalvos recebido em DadosSalvosViewer:', dadosSalvos);
   const datasSalvamento = dadosSalvos ? Object.keys(dadosSalvos) : [];
-
-  console.log('datasSalvamento de Object.keys:', datasSalvamento);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView >
-
         {datasSalvamento.length > 0 ? (
           datasSalvamento.map((data, index) => (
             <View key={data} style={styles.container}>
