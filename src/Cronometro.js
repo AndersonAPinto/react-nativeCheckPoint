@@ -101,9 +101,9 @@ function Cronometro({ cargaHorariaFormatada }) {
 
                     //setMensagemTempoRestante(`... Aguarde ... ${horasRestantes}h ${minutosRestantes}min ${segundosRestantes}s para reiniciar o cronômetro`);
                     setMensagemTempoRestante([
-                        { texto: "!!! Aguarde !!! ", style: { color: 'red', fontSize:30 } },
-                        { texto: `${horasRestantes}h : ${minutosRestantes}min ${segundosRestantes}s`, style: { color: 'green', fontSize:30 } },
-                        { texto: "para o novo Registro Ponto", style: {color:'#C2C1CC'} },
+                        { texto:  "!!! Aguarde !!!", style: { color: 'tomato', fontSize:30 } },
+                        { texto: `${horasRestantes}h : ${minutosRestantes}min ${segundosRestantes}s`, style: { color: 'white', fontSize:35 } },
+                        { texto: "para o iniciar novo Registro Ponto", style: {color:'#C2C1CC'} },
                     ]);
                 } else {
                     setMensagemTempoRestante("");

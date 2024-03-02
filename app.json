@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "chceckPoint",
-    "slug": "chceckPoint",
+    "name": "checkPoint",
+    "slug": "checkPoint",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
