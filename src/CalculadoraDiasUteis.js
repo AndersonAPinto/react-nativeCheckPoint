@@ -40,7 +40,7 @@ const CalculadoraDiasUteis = ({ cargaHoraria }) => {
     }
 
     const cargaHorariaFormatada = `${horas} horas e ${minutos} min`;
-    console.log('cargaHoraria recebida em CalculadoraDiasUteis:', cargaHoraria);
+    //console.log('cargaHoraria recebida em CalculadoraDiasUteis:', cargaHoraria);
     const [mesAtual, setMesAtual] = useState(new Date());
     const ano = mesAtual.getFullYear()
     const mes = mesAtual.getMonth();

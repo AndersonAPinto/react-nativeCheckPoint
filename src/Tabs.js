@@ -2,7 +2,6 @@ import { React } from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import TemplateTeste from './TemplateTeste';
 import DadosSalvos from './DadosSalvos';
-import Tela from './Tela';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 
