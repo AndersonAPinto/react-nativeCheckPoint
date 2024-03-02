@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import feriados from './dataFeriados2024.json';
 import Cronometro from './Cronometro';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const CalculadoraDiasUteis = ({ cargaHoraria }) => {
     const [diasUteis, setDiasUteis] = useState(0);
@@ -39,23 +39,27 @@ const CalculadoraDiasUteis = ({ cargaHoraria }) => {
         horas += 1;
     }
 
-    const cargaHorariaFormatada = `${horas} horas : ${minutos} min`;
+    const cargaHorariaFormatada = `${horas} horas e ${minutos} min`;
     console.log('cargaHoraria recebida em CalculadoraDiasUteis:', cargaHoraria);
     const [mesAtual, setMesAtual] = useState(new Date());
     const ano = mesAtual.getFullYear()
     const mes = mesAtual.getMonth();
-    const mesAnterior = new Date(ano, mes - 1, 15);
+    const mesAnterior = new Date(ano, mes - 1, 16);
     const mesQuinzenaAtual = new Date(ano, mes, 15);
     return (
-            <View>
-                <View style={styles.container}>
-                    <Text style={styles.textDate}>Período: {mesAnterior.toLocaleDateString('pt-BR')} à {mesQuinzenaAtual.toLocaleDateString('pt-BR')}</Text>
-                    <Text style={styles.textCargaUteis}>Dias Úteis: {diasUteis}</Text>
-                    <Text style={styles.textCargaHoraria}>Carga horária/Dia: {cargaHorariaFormatada}</Text>
-                </View>
-                <Cronometro cargaHorariaFormatada={cargaHorariaFormatada} />
+        <View>
+            <View style={styles.container}>
+                <Text style={styles.textDate}>
+                    <Icon
+                        name="calendar"
+                        size={20}
+                        color="#c2c1cc" /> Período: {mesAnterior.toLocaleDateString('pt-BR')} à {mesQuinzenaAtual.toLocaleDateString('pt-BR')}</Text>
+                <Text style={styles.textCargaUteis}>Dias Úteis: {diasUteis}</Text>
+                <Text style={styles.textCargaHoraria}>Carga horária/Dia: {cargaHorariaFormatada}</Text>
             </View>
-        
+            <Cronometro cargaHorariaFormatada={cargaHorariaFormatada} />
+        </View>
+
     );
 };
 
@@ -67,24 +71,24 @@ const styles = StyleSheet.create({
         marginRight: 15,
         borderRadius: 10,
         backgroundColor: '#383c4c',
-        alignItems:'start',
-        justifyContent:'center',
+        alignItems: 'start',
+        justifyContent: 'center',
         marginBottom: '10%',
         paddingLeft: 20,
-        
+
     },
-    textDate:{
+    textDate: {
         color: '#C2C7CC',
         fontSize: 15,
     },
-    textCargaHoraria:{
+    textCargaHoraria: {
         color: '#C2C7CC',
         fontSize: 15,
     },
-    textCargaUteis:{
+    textCargaUteis: {
         color: '#C2C7CC',
         fontSize: 15,
-        
+
     }
 });
 

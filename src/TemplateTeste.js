@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, TextInput, StyleSheet, Text } from 'react-native';
+import { View, TextInput, StyleSheet, Text, StatusBar } from 'react-native';
 import CalculadoraDiasUteis from './CalculadoraDiasUteis'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -34,7 +34,9 @@ function TemplateTeste() {
   }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <>
+    <StatusBar barStyle="light-content" />
+    <SafeAreaView style={{ flex: 1, backgroundColor:'#0D101B' }}>
       <View style={styles.container__principal}>
         
         <View style={styles.viewSettings}>
@@ -60,6 +62,7 @@ function TemplateTeste() {
         <CalculadoraDiasUteis cargaHoraria={cargaHoraria} />
       </View>
     </SafeAreaView>
+    </>
   );
 }
 const styles = StyleSheet.create({
@@ -80,12 +83,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 5,
     backgroundColor: '#383c4c',
-
+    
   },
   containerView: {
     flexDirection: 'row',
     alignItems: 'center',
-
+    height: 40,
   },
   linha: {
     borderBottomColor: '#C2C1CC',
@@ -98,7 +101,7 @@ const styles = StyleSheet.create({
   },
   textCarga: {
     color: '#C2C1CC',
-    marginBottom: 10,
+    
   },
 });
 

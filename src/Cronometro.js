@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, Alert, StyleSheet } from 'react-native';
+import { View, Text, Alert, StyleSheet } from 'react-native';
 import HistoricoEventos from './HistoricoEventos';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Audio } from 'expo-av';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { Button } from 'react-native-elements';
 
 
 function Cronometro({ cargaHorariaFormatada }) {
@@ -191,25 +192,42 @@ function Cronometro({ cargaHorariaFormatada }) {
                 {!isRunning && <Button 
                     icon={
                         <Icon
-                        name="flag-checkered"
-                        size={15}
-                        color="white"
+                        name="play"
+                        size={25}
+                        color="green"
                         />
                     }
-                    title="Início"
-                    color="green"
+                    
+                    title=" Início"
+                    buttonStyle={{ backgroundColor: 'transparent' }}
                     onPress={handlePlay}
                     disabled={!!mensagemTempoRestante} //Converte a string para booleano
                 />}
-                {isRunning && <Button title="Intervalo"
-                    color='yellow'
+                {isRunning && <Button 
+                    icon={
+                        <Icon
+                        name="pause"
+                        size={25}
+                        color="yellow"
+                        />
+                    }
+                    title=" Intervalo"
+                    buttonStyle={{ backgroundColor: 'transparent' }}
                     onPress={handlePause} />}
-                <Button title="Parar"
-                    color="red"
+                <Button 
+                    icon={
+                        <Icon
+                        name="flag-checkered"
+                        size={25}
+                        color="red"
+                        />
+                    }
+                    title=" Parar"
+                    buttonStyle={{ backgroundColor: 'transparent' }}
                     disabled={historicoEventos.length === 0}
                     onPress={() => {
                         handleStop();
-                        console.log(JSON.stringify(dadosSalvos));
+                        //console.log(JSON.stringify(dadosSalvos));
                     }} />
             </View>
             <HistoricoEventos historicoEventos={historicoEventos} />
