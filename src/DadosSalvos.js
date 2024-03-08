@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableWithoutFeedback, Alert } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableWithoutFeedback, Alert, StatusBar } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -44,10 +44,13 @@ const DadosSalvos = () => {
     const datasSalvamento = Object.keys(dadosSalvos);
     console.log(dadosSalvos);
     return (
-        <ScrollView style={styles.container}>
-            <SafeAreaView>
+        <>
+        <StatusBar barStyle="light-content" />
+        <SafeAreaView style={{ flex: 1, backgroundColor:'#0D101B' }}>
+            <ScrollView style={styles.container}>
+
                 <Text style={styles.textExtrato}>
-                    <Icon 
+                    <Icon
                         name="list"
                         size={30}
                         color="#c2c1cc" /> Extratos</Text>
@@ -76,8 +79,10 @@ const DadosSalvos = () => {
                     </View>
                 )}
 
+
+            </ScrollView>
             </SafeAreaView>
-        </ScrollView>
+            </>
 
     );
 };
@@ -91,7 +96,7 @@ const styles = StyleSheet.create({
     textExtrato: {
         color: '#C2C1CC',
         fontSize: 30,
-        marginLeft:10,
+        marginLeft: 10,
     },
     linha: {
         borderBottomColor: '#C2C1CC', // Cor da linha

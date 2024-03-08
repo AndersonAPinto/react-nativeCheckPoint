@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "checkPoint",
-    "slug": "checkPoint",
+    "name": "CheckPoint",
+    "slug": "CheckPoint",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,16 +15,30 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.andersonpinto.checkPoint",
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0D101B"
-      }
+      },
+      "package": "com.andersonpinto.checkPoint",
+      "runtimeVersion": "1.0.0"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/72a5294a-7754-4567-9ba2-f8f78759992e"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c45427a9-a3f4-4446-b021-7c12cfda6df0"
+      }
     }
   }
 }

@@ -39,7 +39,7 @@ const CalculadoraDiasUteis = ({ cargaHoraria }) => {
         horas += 1;
     }
 
-    const cargaHorariaFormatada = `${horas} horas e ${minutos} min`;
+    const cargaHorariaFormatada = `${horas} horas e ${minutos} minutos`;
     //console.log('cargaHoraria recebida em CalculadoraDiasUteis:', cargaHoraria);
     const [mesAtual, setMesAtual] = useState(new Date());
     const ano = mesAtual.getFullYear()
@@ -47,18 +47,20 @@ const CalculadoraDiasUteis = ({ cargaHoraria }) => {
     const mesAnterior = new Date(ano, mes - 1, 16);
     const mesQuinzenaAtual = new Date(ano, mes, 15);
     return (
-        <View>
-            <View style={styles.container}>
-                <Text style={styles.textDate}>
-                    <Icon
-                        name="calendar"
-                        size={20}
-                        color="#c2c1cc" /> Período: {mesAnterior.toLocaleDateString('pt-BR')} à {mesQuinzenaAtual.toLocaleDateString('pt-BR')}</Text>
-                <Text style={styles.textCargaUteis}>Dias Úteis: {diasUteis}</Text>
-                <Text style={styles.textCargaHoraria}>Carga horária/Dia: {cargaHorariaFormatada}</Text>
+        <SafeAreaView>
+            <View>
+                <View style={styles.container}>
+                    <Text style={styles.textDate}>
+                        <Icon
+                            name="calendar"
+                            size={20}
+                            color="#c2c1cc" /> Período: {mesAnterior.toLocaleDateString('pt-BR')} à {mesQuinzenaAtual.toLocaleDateString('pt-BR')}</Text>
+                    <Text style={styles.textCargaUteis}>Dias Úteis: {diasUteis}</Text>
+                    <Text style={styles.textCargaHoraria}>Carga horária/Dia: {cargaHorariaFormatada}</Text>
+                </View>
+                <Cronometro cargaHorariaFormatada={cargaHorariaFormatada} />
             </View>
-            <Cronometro cargaHorariaFormatada={cargaHorariaFormatada} />
-        </View>
+        </SafeAreaView>
 
     );
 };

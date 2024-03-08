@@ -9,7 +9,6 @@ const Tab = createBottomTabNavigator();
 
 export default function Tabs() {
 
-
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({

@@ -8,6 +8,8 @@ function DadosSalvosViewer({ dadosSalvos = {} }) {
   const datasSalvamento = dadosSalvos ? Object.keys(dadosSalvos) : [];
 
   return (
+    <>
+    <StatusBar barStyle="light-content" />
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView >
         {datasSalvamento.length > 0 ? (
@@ -28,6 +30,7 @@ function DadosSalvosViewer({ dadosSalvos = {} }) {
         )}
       </ScrollView>
     </SafeAreaView>
+    </>
   );
 };
 

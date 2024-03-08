@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import { View, TextInput, StyleSheet, Text, StatusBar } from 'react-native';
-import CalculadoraDiasUteis from './CalculadoraDiasUteis'
+import CalculadoraDiasUteis from './CalculadoraDiasUteis';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

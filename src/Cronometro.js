@@ -9,6 +9,7 @@ import { Button } from 'react-native-elements';
 
 
 function Cronometro({ cargaHorariaFormatada }) {
+    //console.log(cargaHorariaFormatada)
     const navigation = useNavigation();
     const [isRunning, setIsRunning] = useState(false);
     const [tempoDecorrido, setTempoDecorrido] = useState(0);
@@ -23,7 +24,7 @@ function Cronometro({ cargaHorariaFormatada }) {
     const segundosDecorridos = tempoDecorrido % 60;
     //const tempoDecorridoFormatado = `${horasDecorridas} h : ${minutosDecorridos} min e ${segundosDecorridos}s`;
     const tempoDecorridoFormatado = [
-        { texto: `${horasDecorridas}h ${minutosDecorridos}min `, style: { color: '#C2C7CC', fontSize: 50 } },
+        { texto: ` ${horasDecorridas}h ${minutosDecorridos}min  `, style: { color: '#C2C7CC', fontSize: 50 } },
         { texto: `${segundosDecorridos}s`, style: { color: '#C2C7CC', fontSize: 15 } },
     ];
 
@@ -41,9 +42,10 @@ function Cronometro({ cargaHorariaFormatada }) {
             const id = setInterval(() => {
                 setTempoDecorrido(prevTempo => {
                     const novoTempo = prevTempo + 1;
-                    const [horas, minutos] = cargaHorariaFormatada.split('h e ').map(part => parseInt(part, 10));
-                    const cargaTotalMinutos = horas * 60 + minutos;
-
+                    const [horas, minutos] = cargaHorariaFormatada.replace(' minutos', '').split('horas e ').map(part => parseInt(part, 10));
+                    const cargaTotalMinutos = (horas * 60) + minutos;
+                    //console.log(cargaTotalMinutos)
+                    //console.log(novoTempo)
                     // Verifica para pausas necessárias a cada 4 horas
                     if (novoTempo % 14400 === 0) { // A cada 240 "minutos" (neste exemplo, segundos simulando minutos)
                         clearInterval(id);
@@ -67,8 +69,8 @@ function Cronometro({ cargaHorariaFormatada }) {
                         //Alert.alert('Tempo Concluído', 'Você concluiu a carga horária máxima permitida.');
                         return prevTempo; // Retorna o tempo atual sem incrementar, pois atingiu a carga total
                     }
-                    // Verifica se o tempo decorrido atingiu a carga total de minutos
-                    if (novoTempo === cargaTotalMinutos * 60) {
+                    // Verifica se o tempo decorrido atingiu a carga total
+                    if (novoTempo === (cargaTotalMinutos * 60)) {
                         clearInterval(id); // Para o cronômetro
                         setIsRunning(false); // Atualiza o estado para pausar o cronômetro
                         playAudio().then(sound => {
@@ -101,9 +103,9 @@ function Cronometro({ cargaHorariaFormatada }) {
 
                     //setMensagemTempoRestante(`... Aguarde ... ${horasRestantes}h ${minutosRestantes}min ${segundosRestantes}s para reiniciar o cronômetro`);
                     setMensagemTempoRestante([
-                        { texto:  "!!! Aguarde !!!", style: { color: 'tomato', fontSize:30 } },
-                        { texto: `${horasRestantes}h : ${minutosRestantes}min ${segundosRestantes}s`, style: { color: 'white', fontSize:35 } },
-                        { texto: "para o iniciar novo Registro Ponto", style: {color:'#C2C1CC'} },
+                        { texto: "!!! Aguarde !!!", style: { color: 'tomato', fontSize: 30 } },
+                        { texto: `${horasRestantes}h : ${minutosRestantes}min ${segundosRestantes}s`, style: { color: 'white', fontSize: 35 } },
+                        { texto: "para o iniciar novo Registro Ponto", style: { color: '#C2C1CC' } },
                     ]);
                 } else {
                     setMensagemTempoRestante("");
@@ -118,7 +120,7 @@ function Cronometro({ cargaHorariaFormatada }) {
     const handlePlay = () => {
         if (!historicoStop) {
             setIsRunning(true);
-            setHistoricoEventos(historicoAtual => [...historicoAtual, { tipo: "Início",momento: new Date() }]);
+            setHistoricoEventos(historicoAtual => [...historicoAtual, { tipo: "Início", momento: new Date() }]);
         } else {
             console.log("Ação de Início bloqueada devido a uma Parada recente.");
         }
@@ -130,28 +132,38 @@ function Cronometro({ cargaHorariaFormatada }) {
         }
     };
     const handleStop = async () => {
-        setIsRunning(false);
-        setTempoDecorrido(0);
-        setUltimoStop(new Date());
-        setHistoricoStop(true);
-        setHistoricoEventos(historicoAtual => [...historicoAtual, { tipo: "Parar", momento: new Date() }]);
-        const eventoStop = { tipo: "Parar", momento: new Date().toLocaleDateString() };
-        await salvarEvento(eventoStop);
-        const dataSalvamento = new Date().toTimeString();
-        const eventosSalvos = historicoEventos.filter(evento => evento.tipo === "Início" || evento.tipo === "Intervalo");
+        const eventoStop = new Date();
+        setHistoricoEventos(historicoAtual => [...historicoAtual, { tipo: " Término", momento: eventoStop }]);
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+
+        const eventosSalvos = [...historicoEventos, { tipo: "-Término", momento: eventoStop }];
+
+        //const eventosSalvos = historicoEventos.filter(evento => evento.tipo === "Início" || evento.tipo === "Intervalo" || eventoStop);
+        //await salvarEvento(eventoStop);
+        const dataSalvamento = new Date().toLocaleString('pt-BR');
+
+        console.log(eventosSalvos)
         try {
             const dadosAtuais = await AsyncStorage.getItem('dadosSalvos');
             const dadosAtualizados = dadosAtuais ? JSON.parse(dadosAtuais) : {};
             dadosAtualizados[dataSalvamento] = eventosSalvos;
 
             await AsyncStorage.setItem('dadosSalvos', JSON.stringify(dadosAtualizados));
-            Alert.alert("Carga horária do dia salva");
-            navigation.navigate('DadosSalvos');
+            Alert.alert("Trabalho Finalizado", "Carga horária do dia salva");
+            //
+            navigation.navigate('Extratos');
+
         } catch (error) {
             console.log("Erro ao salvar dados", error);
         }
-        setHistoricoEventos([]);
+        setIsRunning(false);
+        setTempoDecorrido(0);
+        setUltimoStop(eventoStop);
+        setHistoricoStop(true)
+
         setTimeout(() => {
+            setHistoricoEventos([]);
             setHistoricoStop(false);
         }, 1000);
     };
@@ -189,40 +201,40 @@ function Cronometro({ cargaHorariaFormatada }) {
                 </View>
             )}
             <View style={styles.btnInicioEIntervalo}>
-                {!isRunning && <Button 
+                {!isRunning && <Button
                     icon={
                         <Icon
-                        name="play"
-                        size={25}
-                        color="green"
+                            name="play"
+                            size={25}
+                            color="green"
                         />
                     }
-                    
-                    title=" Início"
+
+                    title=" Iníciar"
                     buttonStyle={{ backgroundColor: 'transparent' }}
                     onPress={handlePlay}
                     disabled={!!mensagemTempoRestante} //Converte a string para booleano
                 />}
-                {isRunning && <Button 
+                {isRunning && <Button
                     icon={
                         <Icon
-                        name="pause"
-                        size={25}
-                        color="yellow"
+                            name="pause"
+                            size={25}
+                            color="yellow"
                         />
                     }
                     title=" Intervalo"
                     buttonStyle={{ backgroundColor: 'transparent' }}
                     onPress={handlePause} />}
-                <Button 
+                <Button
                     icon={
                         <Icon
-                        name="flag-checkered"
-                        size={25}
-                        color="red"
+                            name="flag-checkered"
+                            size={25}
+                            color="red"
                         />
                     }
-                    title=" Parar"
+                    title=" Término"
                     buttonStyle={{ backgroundColor: 'transparent' }}
                     disabled={historicoEventos.length === 0}
                     onPress={() => {
@@ -247,7 +259,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'center',
         paddingVertical: 30,
-        
+
     },
     segmentoContainer: {
         alignItems: 'center',
@@ -268,9 +280,9 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 10,
     },
-    horaFormatada:{
-        flexDirection:'row',
-        alignItems:'center',
+    horaFormatada: {
+        flexDirection: 'row',
+        alignItems: 'center',
         marginBottom: 20,
     },
 });
