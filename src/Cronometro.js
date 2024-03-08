@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Alert, StyleSheet } from 'react-native';
+import { View, Text, Alert, StyleSheet, AppState } from 'react-native';
 import HistoricoEventos from './HistoricoEventos';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -18,7 +18,8 @@ function Cronometro({ cargaHorariaFormatada }) {
     const [UltimoStop, setUltimoStop] = useState(false);
     const [historicoStop, setHistoricoStop] = useState(false);
     const [mensagemTempoRestante, setMensagemTempoRestante] = useState("");
-    const [dadosSalvos, setDadosSalvos] = useState({});
+    const [appState, setAppState] = useState(AppState.currentState);
+
     const horasDecorridas = Math.floor(tempoDecorrido / 3600);
     const minutosDecorridos = Math.floor((tempoDecorrido % 3600) / 60);
     const segundosDecorridos = tempoDecorrido % 60;
@@ -26,6 +27,39 @@ function Cronometro({ cargaHorariaFormatada }) {
         { texto: ` ${horasDecorridas}h ${minutosDecorridos}min  `, style: { color: '#C2C7CC', fontSize: 50 } },
         { texto: `${segundosDecorridos}s`, style: { color: '#C2C7CC', fontSize: 15 } },
     ];
+
+
+    useEffect(() => {
+        const subscription = AppState.addEventListener("change", nextAppState => {
+            if (appState.match(/inactive|background/) && nextAppState === "active") {
+                console.log("App has come to the foreground!");
+                recalcularTempoDecorrido();
+            }
+            setAppState(nextAppState);
+        });
+
+        return () => {
+            subscription.remove();
+        };
+    }, [appState]);
+
+    const recalcularTempoDecorrido = async () => {
+        const estadoSalvo = await AsyncStorage.getItem('estadoCronometro');
+        if (estadoSalvo) {
+            const { isRunning, startTime } = JSON.parse(estadoSalvo);
+            if (isRunning) {
+                const startTimeDate = new Date(startTime).getTime();
+                const now = new Date().getTime();
+                const diffInSeconds = Math.round((now - startTimeDate) / 1000);
+                setTempoDecorrido(diffInSeconds);
+                // Se o cronômetro deveria estar rodando, recomece-o aqui se necessário
+                // Por exemplo, se você pausa o cronômetro automaticamente quando o app vai para o background
+                if (!intervalId) {
+                    iniciarCronometro();
+                }
+            }
+        }
+    };
 
     async function atualizarNotificacaoTempoDecorrido(tempoDecorridoFormatado) {
         // Primeiro, cancela todas as notificações anteriores para evitar duplicatas
@@ -39,6 +73,10 @@ function Cronometro({ cargaHorariaFormatada }) {
             trigger: null, // Imediatamente
         });
     }
+    useEffect(() => {
+        Notifications.requestPermissionsAsync();
+    }, []);
+
 
     async function playAudio() {
         const { sound } = await Audio.Sound.createAsync(
@@ -48,10 +86,6 @@ function Cronometro({ cargaHorariaFormatada }) {
         await sound.playAsync();
         return sound;
     }
-
-    useEffect(() => {
-        Notifications.requestPermissionsAsync();
-    }, []);
 
     useEffect(() => {
         if (isRunning) {
