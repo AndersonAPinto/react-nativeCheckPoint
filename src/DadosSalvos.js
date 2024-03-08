@@ -42,7 +42,7 @@ const DadosSalvos = () => {
         clearTimeout(pressTimer);
     };
     const datasSalvamento = Object.keys(dadosSalvos);
-    console.log(dadosSalvos);
+    //console.log(dadosSalvos);
     return (
         <>
         <StatusBar barStyle="light-content" />

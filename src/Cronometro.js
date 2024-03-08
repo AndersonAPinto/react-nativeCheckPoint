@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Audio } from 'expo-av';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Button } from 'react-native-elements';
-
+import * as Notifications from 'expo-notifications';
 
 function Cronometro({ cargaHorariaFormatada }) {
     //console.log(cargaHorariaFormatada)
@@ -22,11 +22,23 @@ function Cronometro({ cargaHorariaFormatada }) {
     const horasDecorridas = Math.floor(tempoDecorrido / 3600);
     const minutosDecorridos = Math.floor((tempoDecorrido % 3600) / 60);
     const segundosDecorridos = tempoDecorrido % 60;
-    //const tempoDecorridoFormatado = `${horasDecorridas} h : ${minutosDecorridos} min e ${segundosDecorridos}s`;
     const tempoDecorridoFormatado = [
         { texto: ` ${horasDecorridas}h ${minutosDecorridos}min  `, style: { color: '#C2C7CC', fontSize: 50 } },
         { texto: `${segundosDecorridos}s`, style: { color: '#C2C7CC', fontSize: 15 } },
     ];
+
+    async function atualizarNotificacaoTempoDecorrido(tempoDecorridoFormatado) {
+        // Primeiro, cancela todas as notificações anteriores para evitar duplicatas
+        await Notifications.cancelAllScheduledNotificationsAsync();
+        // Agendar uma nova notificação com o tempo decorrido atualizado
+        await Notifications.scheduleNotificationAsync({
+            content: {
+                title: "Cronômetro Rodando",
+                body: `Tempo decorrido: ${tempoDecorridoFormatado}`, // Atualize isso conforme necessário
+            },
+            trigger: null, // Imediatamente
+        });
+    }
 
     async function playAudio() {
         const { sound } = await Audio.Sound.createAsync(
@@ -36,6 +48,10 @@ function Cronometro({ cargaHorariaFormatada }) {
         await sound.playAsync();
         return sound;
     }
+
+    useEffect(() => {
+        Notifications.requestPermissionsAsync();
+    }, []);
 
     useEffect(() => {
         if (isRunning) {
@@ -78,7 +94,10 @@ function Cronometro({ cargaHorariaFormatada }) {
                                 { text: "OK", onPress: () => sound.stopAsync() } // Para a reprodução ao tocar em OK
                             ]);
                         });
-                        //Alert.alert('Tempo Concluído', 'Você concluiu a carga horária planejada.');
+                        if (novoTempo % 300 === 0) { // 300 segundos = 5 minutos
+                            const tempoDecorridoFormatado = `${Math.floor(novoTempo / 3600)}h ${Math.floor((novoTempo % 3600) / 60)}min ${novoTempo % 60}s`;
+                            atualizarNotificacaoTempoDecorrido(tempoDecorridoFormatado);
+                        }
                     }
                     return novoTempo; // Incrementa o tempo decorrido
                 });
@@ -113,37 +132,62 @@ function Cronometro({ cargaHorariaFormatada }) {
                 }
             }, 1000); //1000ms === 1 segundo ou 60000 === 1 minuto
         }
-
         return () => clearInterval(intervalId);
     }, [UltimoStop, isRunning]);
 
-    const handlePlay = () => {
+
+    useEffect(() => {
+        const recuperarDados = async () => {
+            const estadoSalvo = await AsyncStorage.getItem('estadoCronometro');
+            if (estadoSalvo) {
+                const { isRunning, startTime } = JSON.parse(estadoSalvo);
+                if (isRunning) {
+                    const startTimeDate = new Date(startTime);
+                    const now = new Date();
+                    const diffInSeconds = Math.round((now - startTimeDate) / 1000);
+                    setTempoDecorrido(diffInSeconds);
+                    setIsRunning(true);
+                    // Continue a contagem a partir daqui
+                }
+            }
+        };
+        recuperarDados();
+    }, []);
+
+    const handlePlay = async () => {
+        const startTime = new Date();
+        setIsRunning(true);
+        await AsyncStorage.setItem('estadoCronometro', JSON.stringify({ isRunning: true, startTime }));
+
         if (!historicoStop) {
             setIsRunning(true);
             setHistoricoEventos(historicoAtual => [...historicoAtual, { tipo: "Início", momento: new Date() }]);
         } else {
             console.log("Ação de Início bloqueada devido a uma Parada recente.");
         }
+        const tempoDecorridoFormatado = `${horasDecorridas}h ${minutosDecorridos}min ${segundosDecorridos}s`;
+        atualizarNotificacaoTempoDecorrido(tempoDecorridoFormatado);
     };
+
     const handlePause = () => {
         if (isRunning) {
             setIsRunning(false);
             setHistoricoEventos(historicoAtual => [...historicoAtual, { tipo: "Intervalo", momento: new Date() }]);
         }
+        const tempoDecorridoFormatado = `${horasDecorridas}h ${minutosDecorridos}min ${segundosDecorridos}s`;
+        atualizarNotificacaoTempoDecorrido(tempoDecorridoFormatado);
     };
+
     const handleStop = async () => {
+        setIsRunning(false);
+        await AsyncStorage.setItem('estadoCronometro', JSON.stringify({ isRunning: false }));
+
         const eventoStop = new Date();
         setHistoricoEventos(historicoAtual => [...historicoAtual, { tipo: " Término", momento: eventoStop }]);
         await new Promise(resolve => setTimeout(resolve, 100));
-
-
         const eventosSalvos = [...historicoEventos, { tipo: "-Término", momento: eventoStop }];
-
-        //const eventosSalvos = historicoEventos.filter(evento => evento.tipo === "Início" || evento.tipo === "Intervalo" || eventoStop);
-        //await salvarEvento(eventoStop);
         const dataSalvamento = new Date().toLocaleString('pt-BR');
-
-        console.log(eventosSalvos)
+        //console.log(eventosSalvos)
         try {
             const dadosAtuais = await AsyncStorage.getItem('dadosSalvos');
             const dadosAtualizados = dadosAtuais ? JSON.parse(dadosAtuais) : {};
@@ -166,10 +210,10 @@ function Cronometro({ cargaHorariaFormatada }) {
             setHistoricoEventos([]);
             setHistoricoStop(false);
         }, 1000);
+        atualizarNotificacaoTempoDecorrido(tempoDecorridoFormatado);
     };
 
-
-    const salvarEvento = async (evento) => {
+    {/*const salvarEvento = async (evento) => {
         try {
             const eventosExistentes = await AsyncStorage.getItem('eventosSalvos');
             const eventosAtualizados = eventosExistentes ? JSON.parse(eventosExistentes) : [];
@@ -178,7 +222,7 @@ function Cronometro({ cargaHorariaFormatada }) {
         } catch (error) {
             console.log("Erro ao salvar evento", error);
         }
-    };
+    };*/}
     // Formatação do tempo decorrido para exibição
     return (
         <View style={styles.telaInformacoes}>
@@ -234,7 +278,7 @@ function Cronometro({ cargaHorariaFormatada }) {
                             color="red"
                         />
                     }
-                    title=" Término"
+                    title=" Finalizar"
                     buttonStyle={{ backgroundColor: 'transparent' }}
                     disabled={historicoEventos.length === 0}
                     onPress={() => {
@@ -259,7 +303,6 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'center',
         paddingVertical: 30,
-
     },
     segmentoContainer: {
         alignItems: 'center',
