@@ -25,7 +25,7 @@ function DadosSalvosViewer({ dadosSalvos = {} }) {
           ))
         ) : (
           <View style={styles.container}>
-            <Text>Nenhum dado salvo encontrado</Text>
+            <Text>Nenhum Extrato salvo encontrado</Text>
           </View>
         )}
       </ScrollView>

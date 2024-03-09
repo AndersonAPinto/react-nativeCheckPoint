@@ -48,18 +48,16 @@ const CalculadoraDiasUteis = ({ cargaHoraria }) => {
     const mesQuinzenaAtual = new Date(ano, mes, 15);
     return (
         <SafeAreaView>
-            <View>
-                <View style={styles.container}>
-                    <Text style={styles.textDate}>
-                        <Icon
-                            name="calendar"
-                            size={20}
-                            color="#c2c1cc" /> Período: {mesAnterior.toLocaleDateString('pt-BR')} à {mesQuinzenaAtual.toLocaleDateString('pt-BR')}</Text>
-                    <Text style={styles.textCargaUteis}>Dias Úteis: {diasUteis}</Text>
-                    <Text style={styles.textCargaHoraria}>Carga horária/Dia: {cargaHorariaFormatada}</Text>
-                </View>
-                <Cronometro cargaHorariaFormatada={cargaHorariaFormatada} />
+            <View style={styles.container}>
+                <Text style={styles.textDate}>
+                    <Icon
+                        name="calendar"
+                        size={20}
+                        color="#c2c1cc" /> Período: {mesAnterior.toLocaleDateString('pt-BR')} à {mesQuinzenaAtual.toLocaleDateString('pt-BR')}</Text>
+                <Text style={styles.textCargaUteis}>Dias Úteis: {diasUteis}</Text>
+                <Text style={styles.textCargaHoraria}>Carga horária/Dia: {cargaHorariaFormatada}</Text>
             </View>
+            <Cronometro cargaHorariaFormatada={cargaHorariaFormatada} />
         </SafeAreaView>
 
     );
@@ -75,7 +73,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#383c4c',
         alignItems: 'start',
         justifyContent: 'center',
-        marginBottom: '10%',
+        marginBottom: 10,
         paddingLeft: 20,
 
     },

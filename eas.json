@@ -3,7 +3,7 @@
     "version": ">= 7.1.3"
   },
   "build": {
-    "appfinal": {
+    "appfinalizado": {
       "android": {
         "buildType": "apk"
       }

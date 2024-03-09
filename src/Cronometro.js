@@ -6,7 +6,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Audio } from 'expo-av';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Button } from 'react-native-elements';
-import * as Notifications from 'expo-notifications';
 
 function Cronometro({ cargaHorariaFormatada }) {
     //console.log(cargaHorariaFormatada)
@@ -25,14 +24,13 @@ function Cronometro({ cargaHorariaFormatada }) {
     const segundosDecorridos = tempoDecorrido % 60;
     const tempoDecorridoFormatado = [
         { texto: ` ${horasDecorridas}h ${minutosDecorridos}min  `, style: { color: '#C2C7CC', fontSize: 50 } },
-        { texto: `${segundosDecorridos}s`, style: { color: '#C2C7CC', fontSize: 15 } },
+        { texto: `${segundosDecorridos}s`, style: {marginTop: 15,  color: '#C2C7CC', fontSize: 15 } },
     ];
-
 
     useEffect(() => {
         const subscription = AppState.addEventListener("change", nextAppState => {
             if (appState.match(/inactive|background/) && nextAppState === "active") {
-                console.log("App has come to the foreground!");
+                //console.log("App has come to the foreground!");
                 recalcularTempoDecorrido();
             }
             setAppState(nextAppState);
@@ -61,23 +59,6 @@ function Cronometro({ cargaHorariaFormatada }) {
         }
     };
 
-    async function atualizarNotificacaoTempoDecorrido(tempoDecorridoFormatado) {
-        // Primeiro, cancela todas as notificações anteriores para evitar duplicatas
-        await Notifications.cancelAllScheduledNotificationsAsync();
-        // Agendar uma nova notificação com o tempo decorrido atualizado
-        await Notifications.scheduleNotificationAsync({
-            content: {
-                title: "Cronômetro Rodando",
-                body: `Tempo decorrido: ${tempoDecorridoFormatado}`, // Atualize isso conforme necessário
-            },
-            trigger: null, // Imediatamente
-        });
-    }
-    useEffect(() => {
-        Notifications.requestPermissionsAsync();
-    }, []);
-
-
     async function playAudio() {
         const { sound } = await Audio.Sound.createAsync(
             require('../src/music/AlarmSlow.mp3'), // Substitua pela URL do seu áudio
@@ -96,7 +77,7 @@ function Cronometro({ cargaHorariaFormatada }) {
                     const cargaTotalMinutos = (horas * 60) + minutos;
                     //console.log(cargaTotalMinutos)
                     //console.log(novoTempo)
-                    // Verifica para pausas necessárias a cada 4 horas
+                    //Verifica para pausas necessárias a cada 4 horas
                     if (novoTempo % 14400 === 0) { // A cada 240 "minutos" (neste exemplo, segundos simulando minutos)
                         clearInterval(id);
                         setIsRunning(false);
@@ -105,7 +86,6 @@ function Cronometro({ cargaHorariaFormatada }) {
                                 { text: "OK", onPress: () => sound.stopAsync() } // Para a reprodução ao tocar em OK
                             ]);
                         });
-                        //Alert.alert('Pausa Necessária', 'Faça uma pausa de no mínimo 15 minutos.');
                     }
                     // Verifica se o tempo decorrido atingiu a carga total de 9h:50min
                     if (novoTempo === 35400) {
@@ -116,22 +96,17 @@ function Cronometro({ cargaHorariaFormatada }) {
                                 { text: "OK", onPress: () => sound.stopAsync() } // Para a reprodução ao tocar em OK
                             ]);
                         });
-                        //Alert.alert('Tempo Concluído', 'Você concluiu a carga horária máxima permitida.');
                         return prevTempo; // Retorna o tempo atual sem incrementar, pois atingiu a carga total
                     }
                     // Verifica se o tempo decorrido atingiu a carga total
                     if (novoTempo === (cargaTotalMinutos * 60)) {
                         clearInterval(id); // Para o cronômetro
-                        setIsRunning(false); // Atualiza o estado para pausar o cronômetro
+                        setIsRunning(false); 
                         playAudio().then(sound => {
                             Alert.alert('Tempo Concluído', 'Você concluiu a carga horária planejada.', [
                                 { text: "OK", onPress: () => sound.stopAsync() } // Para a reprodução ao tocar em OK
                             ]);
                         });
-                        if (novoTempo % 300 === 0) { // 300 segundos = 5 minutos
-                            const tempoDecorridoFormatado = `${Math.floor(novoTempo / 3600)}h ${Math.floor((novoTempo % 3600) / 60)}min ${novoTempo % 60}s`;
-                            atualizarNotificacaoTempoDecorrido(tempoDecorridoFormatado);
-                        }
                     }
                     return novoTempo; // Incrementa o tempo decorrido
                 });
@@ -154,7 +129,6 @@ function Cronometro({ cargaHorariaFormatada }) {
                     const minutosRestantes = Math.floor(((tempoDePausa - diferencaHora) % 3600000) / 60000);
                     const segundosRestantes = Math.floor(((tempoDePausa - diferencaHora) % 60000) / 1000);
 
-                    //setMensagemTempoRestante(`... Aguarde ... ${horasRestantes}h ${minutosRestantes}min ${segundosRestantes}s para reiniciar o cronômetro`);
                     setMensagemTempoRestante([
                         { texto: "!!! Aguarde !!!", style: { color: 'tomato', fontSize: 30 } },
                         { texto: `${horasRestantes}h : ${minutosRestantes}min ${segundosRestantes}s`, style: { color: 'white', fontSize: 35 } },
@@ -169,25 +143,6 @@ function Cronometro({ cargaHorariaFormatada }) {
         return () => clearInterval(intervalId);
     }, [UltimoStop, isRunning]);
 
-
-    useEffect(() => {
-        const recuperarDados = async () => {
-            const estadoSalvo = await AsyncStorage.getItem('estadoCronometro');
-            if (estadoSalvo) {
-                const { isRunning, startTime } = JSON.parse(estadoSalvo);
-                if (isRunning) {
-                    const startTimeDate = new Date(startTime);
-                    const now = new Date();
-                    const diffInSeconds = Math.round((now - startTimeDate) / 1000);
-                    setTempoDecorrido(diffInSeconds);
-                    setIsRunning(true);
-                    // Continue a contagem a partir daqui
-                }
-            }
-        };
-        recuperarDados();
-    }, []);
-
     const handlePlay = async () => {
         const startTime = new Date();
         setIsRunning(true);
@@ -199,8 +154,6 @@ function Cronometro({ cargaHorariaFormatada }) {
         } else {
             console.log("Ação de Início bloqueada devido a uma Parada recente.");
         }
-        const tempoDecorridoFormatado = `${horasDecorridas}h ${minutosDecorridos}min ${segundosDecorridos}s`;
-        atualizarNotificacaoTempoDecorrido(tempoDecorridoFormatado);
     };
 
     const handlePause = () => {
@@ -208,8 +161,6 @@ function Cronometro({ cargaHorariaFormatada }) {
             setIsRunning(false);
             setHistoricoEventos(historicoAtual => [...historicoAtual, { tipo: "Intervalo", momento: new Date() }]);
         }
-        const tempoDecorridoFormatado = `${horasDecorridas}h ${minutosDecorridos}min ${segundosDecorridos}s`;
-        atualizarNotificacaoTempoDecorrido(tempoDecorridoFormatado);
     };
 
     const handleStop = async () => {
@@ -244,20 +195,8 @@ function Cronometro({ cargaHorariaFormatada }) {
             setHistoricoEventos([]);
             setHistoricoStop(false);
         }, 1000);
-        atualizarNotificacaoTempoDecorrido(tempoDecorridoFormatado);
     };
 
-    {/*const salvarEvento = async (evento) => {
-        try {
-            const eventosExistentes = await AsyncStorage.getItem('eventosSalvos');
-            const eventosAtualizados = eventosExistentes ? JSON.parse(eventosExistentes) : [];
-            eventosAtualizados.push(evento);
-            await AsyncStorage.setItem('eventosSalvos', JSON.stringify(eventosAtualizados));
-        } catch (error) {
-            console.log("Erro ao salvar evento", error);
-        }
-    };*/}
-    // Formatação do tempo decorrido para exibição
     return (
         <View style={styles.telaInformacoes}>
             {mensagemTempoRestante && mensagemTempoRestante.length > 0 ? (
@@ -336,7 +275,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#383c4c',
         flexDirection: 'column',
         alignItems: 'center',
-        paddingVertical: 30,
+        paddingBottom: 20,
     },
     segmentoContainer: {
         alignItems: 'center',

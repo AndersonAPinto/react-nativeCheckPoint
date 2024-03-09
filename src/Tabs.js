@@ -18,10 +18,7 @@ export default function Tabs() {
                         iconName = focused ? 'briefcase' : 'suitcase';
                     } else if (route.name === 'Extratos') {
                         iconName = focused ? 'folder-open' : 'folder';
-                    } else if (route.name === 'Configurações') {
-                        iconName = focused ? 'sliders' : 'sliders';
-                    }
-
+                    } 
                     // Você pode retornar qualquer componente que desejar aqui!
                     return <Icon name={iconName} size={size} color={color} />;
                 },
@@ -58,13 +55,7 @@ export default function Tabs() {
                     headerShown: false,
                 }}
             />
-            {/*<Tab.Screen
-                name='Configurações'
-                component={Tela}
-                options={{
-                    headerShown: false,
-                }}
-            />*/}
+           
         </Tab.Navigator>
     )
 }

@@ -58,7 +58,6 @@ function TemplateTeste() {
 
           </View>
         </View>
-        
         <CalculadoraDiasUteis cargaHoraria={cargaHoraria} />
       </View>
     </SafeAreaView>
