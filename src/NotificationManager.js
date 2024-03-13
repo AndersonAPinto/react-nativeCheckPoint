@@ -5,7 +5,7 @@ export async function enviarNotificacao() {
     content: {
       title: "Intervalo Necessário!",
       body: 'Acesse o App para mais informações',
-      data: { data: novoTempo },
+      data: { data: new Date().toLocaleString('pt-BR') },
     },
     trigger: { seconds: 1 },
   });
