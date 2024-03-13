@@ -18,7 +18,7 @@ function DadosSalvosViewer({ dadosSalvos = {} }) {
               <Text>Data: {data}</Text>
               {(dadosSalvos[data] || []).map((evento, idx) => (
                 <Text key={idx}>
-                  {evento.tipo} às {new Date(evento.momento).toLocaleString()}
+                  {evento.tipo} às {new Date(evento.momento).toLocaleString('pt-BR')}
                 </Text>
               ))}
             </View>

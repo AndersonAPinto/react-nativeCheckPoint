@@ -3,10 +3,13 @@ import { View, TextInput, StyleSheet, Text, StatusBar } from 'react-native';
 import CalculadoraDiasUteis from './CalculadoraDiasUteis';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { Vibration } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 
 function TemplateTeste() {
 
+
+  const isFocused = useIsFocused();
   const [cargaHoraria, setCargaHoraria] = useState(0);
   //console.log('cargaHoraria antes de passar para CalculadoraDiasUteis:', cargaHoraria);
   const salvarCargaHoraria = async (valor) => {
@@ -16,6 +19,12 @@ function TemplateTeste() {
       console.error("Erro ao salvar a carga horária", e);// salvar erro
     }
   };
+
+  useEffect(()=>{
+    if (isFocused){
+      Vibration.vibrate(2);
+    }
+  }, [isFocused]);
 
   useEffect(() => {
     const carregarCargaHoraria = async () => {

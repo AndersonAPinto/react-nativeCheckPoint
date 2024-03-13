@@ -8,7 +8,7 @@ const HistoricoEventos = ({ historicoEventos }) => {
       <Text style={styles.textRegistro}>Registros do dia...</Text>
       <View style={styles.viewHistoricaEventos}>
         {historicoEventos.map((evento, index) => (
-          <Text style={styles.textHE} key={index}>{evento.tipo}: {evento.momento.toLocaleString()}</Text>
+          <Text style={styles.textHE} key={index}>{evento.tipo}: {evento.momento.toLocaleString('pt-BR')}</Text>
         ))}
 
       </View>

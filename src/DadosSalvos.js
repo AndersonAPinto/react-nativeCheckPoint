@@ -1,15 +1,23 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableWithoutFeedback, Alert, StatusBar } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import { Vibration } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 
 const DadosSalvos = () => {
     const [dadosSalvos, setDadosSalvos] = useState({});
+    const isFocused = useIsFocused();
 
     let pressTimer;
+
+    useEffect(() => {
+        if (isFocused) {
+          Vibration.vibrate(2);
+        }
+      }, [isFocused]);
 
     useFocusEffect(
         useCallback(() => {
@@ -83,7 +91,7 @@ const DadosSalvos = () => {
                                     <Text style={styles.dataTitle}>Data: {data}</Text>
                                     {dadosSalvos[data].map((evento, idx) => (
                                         <Text key={idx} style={styles.eventoText}>
-                                            {evento.tipo} às {new Date(evento.momento).toLocaleTimeString()}
+                                            {evento.tipo} às {new Date(evento.momento).toLocaleTimeString('pt-BR')}
                                         </Text>
                                     ))}
                                 </View>

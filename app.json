@@ -2,7 +2,7 @@
   "expo": {
     "name": "CheckPoint",
     "slug": "CheckPoint",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -22,12 +22,13 @@
       }
     },
     "android": {
+      "VersionCode" :1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0D101B"
       },
       "package": "com.andersonpinto.checkPoint",
-      "runtimeVersion": "1.0.0"
+      "runtimeVersion": "1.0.1"
     },
     "web": {
       "favicon": "./assets/favicon.png"
