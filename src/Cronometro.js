@@ -23,10 +23,10 @@ function Cronometro({ cargaHorariaFormatada }) {
     const [historicoStop, setHistoricoStop] = useState(false);
     const [mensagemTempoRestante, setMensagemTempoRestante] = useState("");
     const [appState, setAppState] = useState(AppState.currentState);
-
     const horasDecorridas = Math.floor(tempoDecorrido / 3600);
     const minutosDecorridos = Math.floor((tempoDecorrido % 3600) / 60);
     const segundosDecorridos = tempoDecorrido % 60;
+    const [cargaTotal, setCargaTotal] = useState(0);
     const tempoDecorridoFormatado = [
         { texto: ` ${horasDecorridas}h ${minutosDecorridos}min  `, style: { color: '#C2C7CC', fontSize: 50 } },
         { texto: `${segundosDecorridos}s`, style: { marginTop: 15, color: '#C2C7CC', fontSize: 15 } },
@@ -56,12 +56,26 @@ function Cronometro({ cargaHorariaFormatada }) {
                     const now = new Date().getTime();
                     const diffInSeconds = Math.round((now - startTimeDate) / 1000);
                     setTempoDecorrido(diffInSeconds);
+
+                    await Notifications.cancelAllScheduledNotificationsAsync();
+                    const tempoRestantePara4Horas = 14400 - diffInSeconds;
+                    const cargaHorariaMaxima = 35400 - diffInSeconds;
+                    const cargTotaMinutosEnd = cargaTotal - diffInSeconds
+                    if (tempoRestantePara4Horas > 0) {
+                        enviarNotificacaoParaTempoEspecifico(tempoRestantePara4Horas);
+                        console.log(tempoRestantePara4Horas)
+                    }else if(isRunning && cargaHorariaMaxima > 0){
+                        enviarNotificacaoParaTempoEspecifico(cargaHorariaMaxima);
+                    }else if(isRunning && cargTotaMinutosEnd > 0) {
+                        enviarNotificacaoParaTempoEspecifico(cargTotaMinutosEnd)
+                    }
                 }
             }
         } catch (error) {
             console.log("Erro ao ler o estado do cronômetro", error);
         }
-    };
+    }
+    
 
     useEffect(() => {
         const appStateListener = AppState.addEventListener("change", (nextAppState) => {
@@ -118,6 +132,7 @@ function Cronometro({ cargaHorariaFormatada }) {
                     if (novoTempo === (cargaTotalMinutos * 60)) {
                         clearInterval(id); // Para o cronômetro
                         setIsRunning(false);
+                        setCargaTotal(novoTempo);
                         // App está ativo, tocar áudio
                         playAudio().then(sound => {
                             Alert.alert('Aviso!!!', 'Você concluiu a carga horária planejada.', [
@@ -174,7 +189,10 @@ function Cronometro({ cargaHorariaFormatada }) {
         } else {
             console.log("Ação de Início bloqueada devido a uma Parada recente.");
         }
-        enviarNotificacaoParaTempoEspecifico(14400);
+        
+        await Notifications.cancelAllScheduledNotificationsAsync();
+        
+        
     };
     const handlePause = async () => {
         if (isRunning) {
