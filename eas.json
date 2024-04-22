@@ -6,21 +6,27 @@
     "appfinalizado": {
       "android": {
         "buildType": "apk"
-      }
+      },
+      "channel": "appfinalizado-channel" 
     },
     "preview2": {
       "android": {
         "gradleCommand": ":app:assembleRelease"
-      }
+      },
+      "channel": "preview2-channel" 
     },
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "channel": "development-channel" 
     },
     "preview3": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "channel": "preview3-channel" 
     },
-    "production": {}
+    "production": {
+      "channel": "production-channel"
+    }
   },
   "submit": {
     "production": {}

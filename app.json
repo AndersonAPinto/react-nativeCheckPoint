@@ -1,11 +1,15 @@
 {
   "expo": {
-    "name": "CheckPoint",
-    "slug": "CheckPoint",
+    "name": "Check Point",
+    "slug": "projects",
     "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "notification": {
+      "icon": "./assets/notification-icon.png",
+      "color": "#0D101B"
+    },
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -22,13 +26,12 @@
       }
     },
     "android": {
-      "VersionCode" :1,
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0D101B"
       },
-      "package": "com.andersonpinto.checkPoint",
-      "runtimeVersion": "1.0.1"
+      "package": "com.andersonpinto.projects"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -38,7 +41,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "c45427a9-a3f4-4446-b021-7c12cfda6df0"
+        "projectId": "7b4adc7f-c1f5-4e30-bc69-39625030f006"
       }
     }
   }

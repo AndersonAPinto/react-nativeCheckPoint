@@ -7,7 +7,7 @@ import { Audio } from 'expo-av';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Button } from 'react-native-elements';
 import * as Notifications from 'expo-notifications';
-import * as Permissions from 'expo-permissions';
+//import * as MediaLibrary from 'expo-media-library';
 import { enviarNotificacaoParaTempoEspecifico } from './NotificationManager';
 
 
