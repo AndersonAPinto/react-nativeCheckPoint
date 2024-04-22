@@ -30,6 +30,6 @@ Estou à procura de oportunidades para levar minhas habilidades de desenvolvimen
 
 ![ReactNative](https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![Node](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
-![Downloads](https://img.shields.io/github/downloads/{AndersonAPinto}/{react-nativeCheckPoint}/total.svg)
+![Downloads](https://img.shields.io/github/downloads/AndersonAPinto/react-nativeCheckPoint/total.svg)
 
 
