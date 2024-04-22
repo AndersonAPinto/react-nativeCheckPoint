@@ -34,6 +34,7 @@ Para realizar o donwload do app,  clique em download, [Download CheckPointApp](h
 
 ![ReactNative](https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![Node](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
+<img src="./assests/imagesGithub" alt="Logo do Projeto" style="max-width:10%;height:10%;">
 
 
 
