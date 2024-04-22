@@ -28,8 +28,13 @@ Este projeto não só melhorou a precisão dos registros de ponto para os usuár
 
 Estou à procura de oportunidades para levar minhas habilidades de desenvolvimento ainda mais longe, trabalhando em projetos desafiadores e inovadores. Se você está interessado em discutir como esta tecnologia pode ser integrada ou adaptada para sua empresa, ou se deseja explorar possíveis colaborações, não hesite em entrar em contato.
 
+## Download
+
+Para realizar o donwload do app,  clique em download, [Download CheckPointApp](https://drive.google.com/file/d/1LDcCMDtn-sumQDYqIaPVziyJuJEXwOOU/view?usp=drive_link) 
+
 ![ReactNative](https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![Node](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
-![Downloads](https://img.shields.io/github/downloads/AndersonAPinto/react-nativeCheckPoint/total.svg)
+
+
 
 
