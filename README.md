@@ -32,9 +32,17 @@ Estou à procura de oportunidades para levar minhas habilidades de desenvolvimen
 
 Para realizar o donwload do app,  clique em download, [Download CheckPointApp](https://drive.google.com/file/d/1LDcCMDtn-sumQDYqIaPVziyJuJEXwOOU/view?usp=drive_link) 
 
+
+<img src="./assets/imagesGIthub/splash.png" alt="Logo do Projeto" style="max-width:210px;height:420px;">
+<img src="./assets/imagesGIthub/image1.jpeg" alt="Logo do Projeto" style="max-width:210px;height:420px;">
+<img src="./assets/imagesGIthub/image2.jpeg" alt="Logo do Projeto" style="max-width:200px;height:400px;">
+
+
 ![ReactNative](https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![Node](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
-<img src="./assests/imagesGithub" alt="Logo do Projeto" style="max-width:10%;height:10%;">
+
+
+
 
 
 
